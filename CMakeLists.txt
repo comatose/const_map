@@ -8,8 +8,11 @@ find_package(Hana 1.1.0)
 add_executable(const_map const_map.cpp)
 add_dependencies(const_map Hana)
 
-include_directories(${Hana_INCLUDE_DIRS})
-list(APPEND CMAKE_CXX_FLAGS -std=gnu++1z)
+include_directories(
+  "${CMAKE_SOURCE_DIR}/include"
+  ${Hana_INCLUDE_DIRS}
+)
+list(APPEND CMAKE_CXX_FLAGS "-std=gnu++1z -O3")
 
 # set_property(TARGET const_map PROPERTY CXX_INCLUDE_WHAT_YOU_USE "iwyu")
 # set_property(TARGET const_map PROPERTY CXX_STANDARD 14)
