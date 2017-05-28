@@ -24,5 +24,15 @@ int main() {
 
   int i = 3;
   cout << b.find(i) - b.begin() << '\n';
+
+  constexpr auto p = make_pair(1, 3);
+  static_assert(p.first == 1);
+
+  constexpr solid::array<int, 5> c(b.begin(), b.end());
+  constexpr solid::array<solid::pair<int, int>, 2> k = {{1, 2}, {3, 10}};
+
+  constexpr solid::ordered_map<int, int, 2> z = {{3, 2}, {1, 10}};
+  static_assert(z[3] == 2 && z[1] == 10);
+  volatile auto x = z[i];
   return 0;
 }
