@@ -10,8 +10,6 @@
 #include <utility>
 #include <algorithm>
 
-namespace hana = boost::hana;
-
 template<typename... Ts>
 class const_sorted_map : public boost::hana::tuple<Ts...> {
   using base_type = boost::hana::tuple<Ts...>;
@@ -32,7 +30,7 @@ class const_sorted_map : public boost::hana::tuple<Ts...> {
   template<std::size_t... I>
   constexpr const_sorted_map(base_type t, std::index_sequence<I...>)
   : base_type(t), array_{t[boost::hana::int_c<I>]...} {
-    static_assert(t == hana::sort(t));
+    static_assert(t == boost::hana::sort(t));
   }
 };
 

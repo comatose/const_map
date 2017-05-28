@@ -5,7 +5,7 @@ list(APPEND CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake/Modules/")
 set(Hana_INSTALL_PREFIX "${CMAKE_SOURCE_DIR}/ext/hana")
 find_package(Hana 1.1.0)
 
-add_executable(const_map const_map.cpp)
+add_executable(const_map main.cpp)
 add_dependencies(const_map Hana)
 
 include_directories(
