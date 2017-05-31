@@ -2,6 +2,7 @@
 #include <boost/hana.hpp>
 
 #include <solid.hpp>
+#include <const_map.hpp>
 
 using namespace std;
 
@@ -34,5 +35,10 @@ int main() {
   constexpr solid::ordered_map<int, int, 2> z = {{3, 2}, {1, 10}};
   static_assert(z[3] == 2 && z[1] == 10);
   volatile auto x = z[i];
+
+  const_sorted_map<int, 3, 1, 2> csm;
+  cout << csm.index_of(1) << '\n';
+  cout << csm.index_of(i) << '\n';
+  static_assert(csm.index_of(hana::int_c<2>) == 1);
   return 0;
 }

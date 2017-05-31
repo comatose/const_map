@@ -10,40 +10,33 @@
 #include <utility>
 #include <algorithm>
 
-template<typename... Ts>
-class const_sorted_map : public boost::hana::tuple<Ts...> {
-  using base_type = boost::hana::tuple<Ts...>;
-  using value_type = typename std::decay_t<decltype(std::declval<base_type>()[boost::hana::int_c<0>])>::value_type;
-
+template<typename T, T... Is>
+class const_sorted_map {
  public:
-  constexpr const_sorted_map(base_type t)
-  : const_sorted_map(t, std::index_sequence_for<Ts...>{}) {
-  }
+  using value_type = T;
 
-  auto index_of(const value_type& v) const {
+  constexpr const_sorted_map()
+  : array_(boost::hana::unpack(ordered_tuple, [](auto... args) {
+        return decltype(array_){args...}; })) {}
+
+  constexpr std::size_t index_of(const value_type& v) const {
     return std::distance(array_.begin(), std::lower_bound(array_.begin(), array_.end(), v));
   }
 
- private:
-  const std::array<value_type, sizeof...(Ts)> array_;
-
-  template<std::size_t... I>
-  constexpr const_sorted_map(base_type t, std::index_sequence<I...>)
-  : base_type(t), array_{t[boost::hana::int_c<I>]...} {
-    static_assert(t == boost::hana::sort(t));
+  template<value_type N>
+  constexpr std::size_t index_of(boost::hana::integral_constant<value_type, N> i) const {
+    return boost::hana::length(
+        boost::hana::take_while(ordered_tuple, boost::hana::not_equal.to(i)));
   }
+
+  constexpr std::size_t size() const {
+    return sizeof...(Is);
+  }
+
+ private:
+  static constexpr auto ordered_tuple = boost::hana::sort(boost::hana::tuple_c<value_type, Is...>);
+
+  const std::array<value_type, sizeof...(Is)> array_;
 };
-
-namespace internal {
-template<typename... Ts>
-constexpr auto make_const_sorted_map_impl(boost::hana::tuple<Ts...> t) {
-  return const_sorted_map<Ts...>(t);
-}
-}
-
-template<typename... Ts>
-constexpr auto make_const_sorted_map(Ts... args) {
-  return internal::make_const_sorted_map_impl(boost::hana::sort(boost::hana::make_tuple(args...)));
-}
 
 #endif // __CONST_MAP_HPP
