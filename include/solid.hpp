@@ -127,6 +127,23 @@ class array {
   T elements_[N]{};
 };
 
+template<typename T, std::size_t N>
+constexpr array<T, N+1> append(const array<T, N>& a, T v) {
+  array<T, N+1> r{a.begin(), a.end()};
+  r[N] = std::move(v);
+  return r;
+}
+
+template<typename T, typename = std::enable_if_t<std::is_integral<T>::value>>
+constexpr std::size_t hash(const T& value) {
+  return value;
+}
+
+template<typename T>
+constexpr std::size_t hash(std::size_t d, const T& value) {
+  return ((d * 0x01000193) ^ hash(value)) & 0xffffffff;
+}
+
 template<typename Key, std::size_t N>
 class ordered_set : public array<Key, N> {
   using base_type = array<Key, N>;
@@ -206,6 +223,46 @@ class ordered_map {
       *(kit++) = entry.first;
 
     return ordered_set<Key, N>{ks.begin(), ks.end()};
+  }
+};
+
+template<typename Key, std::size_t N>
+class unordered_set : public array<Key, N> {
+  using base_type = array<Key, N>;
+ public:
+  using iterator = Key*;
+  using const_iterator = const Key*;
+
+  using base_type::begin;
+  using base_type::end;
+  using base_type::cbegin;
+  using base_type::cend;
+  using base_type::size;
+  using base_type::operator[];
+
+  constexpr unordered_set() = default;
+
+  constexpr unordered_set(const unordered_set& other)
+  : base_type(other) {
+  }
+
+  template<class InputIt>
+  constexpr unordered_set(InputIt first, InputIt last)
+  : base_type(first, last) {
+    quick_sort(begin(), end());
+  }
+
+  constexpr unordered_set(std::initializer_list<Key> init)
+  : base_type(init) {
+    quick_sort(begin(), end());
+  }
+
+  constexpr iterator find(const Key& k) {
+    return binary_search(begin(), end(), k);
+  }
+
+  constexpr const_iterator find(const Key& k) const {
+    return binary_search(cbegin(), cend(), k);
   }
 };
 

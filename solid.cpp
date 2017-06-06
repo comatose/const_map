@@ -29,5 +29,9 @@ int main() {
   static_assert(z[3] == 2 && z[1] == 10);
   assert(z[i] == 2);
 
+  static_assert(solid::hash(1) == 1);
+
+  constexpr solid::array<int, 6> d = solid::append(c, 9);
+
   return 0;
 }
