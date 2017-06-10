@@ -1,0 +1,12 @@
+[
+{
+  "directory": "/home/comatose/workspace/const_map",
+  "command": "/usr/bin/c++    -I/home/comatose/workspace/const_map/include -I/home/comatose/workspace/const_map/ext/hana/include  -std=gnu++1z -O3   -o CMakeFiles/solid.dir/solid.cpp.o -c /home/comatose/workspace/const_map/solid.cpp",
+  "file": "/home/comatose/workspace/const_map/solid.cpp"
+},
+{
+  "directory": "/home/comatose/workspace/const_map",
+  "command": "/usr/bin/c++    -I/home/comatose/workspace/const_map/include -I/home/comatose/workspace/const_map/ext/hana/include  -std=gnu++1z -O3   -o CMakeFiles/const_map.dir/const_map.cpp.o -c /home/comatose/workspace/const_map/const_map.cpp",
+  "file": "/home/comatose/workspace/const_map/const_map.cpp"
+}
+]
