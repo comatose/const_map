@@ -87,15 +87,24 @@ constexpr RandomIt binary_search(RandomIt first, RandomIt last, const V& value){
   return notfound;
 }
 
-template<typename T, typename = std::enable_if_t<std::is_integral<T>::value>>
-constexpr std::size_t hash(const T& value) {
-  return value;
+template< class InputIt, class T, class BinaryOperation >
+constexpr T accumulate( InputIt first, InputIt last, T init, BinaryOperation op ) {
+  for (; first != last; ++first) {
+    init = op(init, *first);
+  }
+  return init;
 }
 
+template<typename T, typename = void>
+struct hash {
+};
+
 template<typename T>
-constexpr std::size_t hash(std::size_t d, const T& value) {
-  return ((d * 0x01000193) ^ hash(value)) & 0xffffffff;
-}
+struct hash<T, std::enable_if_t<std::is_integral<T>::value>> {
+  constexpr std::size_t operator()(const T& value) {
+    return value;
+  }
+};
 
 }
 #endif // __SOLID_ALGORITHM_HPP

@@ -75,4 +75,12 @@ constexpr array<T, N+1> append(const array<T, N>& a, T v) {
 }
 
 }
+
+namespace std {
+
+template<class T, size_t N>
+struct tuple_size<solid::array<T, N>> : integral_constant<size_t, N>
+{};
+
+}
 #endif // __SOLID_ARRAY_HPP

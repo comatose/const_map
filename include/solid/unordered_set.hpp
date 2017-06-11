@@ -4,50 +4,105 @@
 #include "algorithm.hpp"
 #include "array.hpp"
 
-#include <cstddef>
+#include <bitset>
 #include <initializer_list>
+
+#include <cstddef>
 
 namespace solid {
 
-template<typename Key, std::size_t N>
-class unordered_set : public array<Key, N> {
-  using base_type = array<Key, N>;
- public:
-  using iterator = Key*;
-  using const_iterator = const Key*;
+namespace internal {
 
-  using base_type::begin;
-  using base_type::end;
-  using base_type::cbegin;
-  using base_type::cend;
-  using base_type::size;
-  using base_type::operator[];
+template<typename T, class Hash = solid::hash<T>>
+constexpr std::size_t hash_with(std::size_t d, const T& value) {
+  return ((d * 0x01000193) ^ Hash{}(value)) & 0xffffffff;
+}
+
+static_assert(hash_with(0, 1) == 1);
+
+template<class Ts, std::size_t N, class Hash = solid::hash<typename Ts::value_type>>
+constexpr bool unique_with(const Ts& ts, std::size_t d) {
+  bool used[N]{false};
+  for(const auto& e : ts) {
+    auto hv = hash_with<typename Ts::value_type, Hash>(d, e) % N;
+    if(used[hv]) {
+      return false;
+    }
+    used[hv] = true;
+  }
+  return true;
+}
+
+template<std::size_t N, class Ts, class Hash = solid::hash<typename Ts::value_type>>
+constexpr std::size_t find_min(const Ts& ts, std::size_t maxd = std::numeric_limits<std::size_t>::max()) {
+  for(std::size_t d = 0; d < maxd; ++d) {
+    if(unique_with<Ts, N, Hash>(ts, d))
+      return d;
+  }
+  return maxd;
+}
+
+}
+
+template<class T, std::size_t N, class Hash = solid::hash<T>>
+struct simple_indexer {
+
+  template<class Ts>
+  constexpr simple_indexer(const Ts& ts)
+  : d(internal::find_min<N, Ts, Hash>(ts)) {
+    static_assert(std::is_same<typename Ts::value_type, T>::value);
+  }
+
+  constexpr std::size_t index_of(std::size_t i) const {
+    return internal::hash_with<T, Hash>(d, i) % N;
+  }
+
+ private:
+  std::size_t d{};
+};
+
+template<typename T, std::size_t N, class Indexer = simple_indexer<T, N>>
+class unordered_set {
+ public:
+  using iterator = T*;
+  using const_iterator = const T*;
+  using value_type = T;
 
   constexpr unordered_set() = default;
 
-  constexpr unordered_set(const unordered_set& other)
-  : base_type(other) {
+  constexpr unordered_set(std::initializer_list<T> init)
+  : indexer_{init} {
+    for(const auto& k : init) {
+      auto i = indexer_.index_of(k);
+      container_[i] = k;
+      occupied_[i] = true;
+    }
   }
 
-  template<class InputIt>
-  constexpr unordered_set(InputIt first, InputIt last)
-  : base_type(first, last) {
-    quick_sort(begin(), end());
+  constexpr bool find(const T& k) {
+    auto i = indexer_.index_of(k);
+    return occupied_[i] && container_[i] == k;
   }
 
-  constexpr unordered_set(std::initializer_list<Key> init)
-  : base_type(init) {
-    quick_sort(begin(), end());
+  constexpr bool find(const T& k) const {
+    auto i = indexer_.index_of(k);
+    return occupied_[i] && container_[i] == k;
   }
 
-  constexpr iterator find(const Key& k) {
-    return binary_search(begin(), end(), k);
-  }
-
-  constexpr const_iterator find(const Key& k) const {
-    return binary_search(cbegin(), cend(), k);
-  }
+ private:
+  Indexer indexer_{};
+  array<T, N> container_{};
+  array<bool, N> occupied_{};
 };
 
 }
+
+namespace std {
+
+template<class T, size_t N, class Indexer>
+struct tuple_size<solid::unordered_set<T, N, Indexer>> : integral_constant<size_t, N>
+{};
+
+}
+
 #endif // __SOLID_UNORDERED_SET_HPP

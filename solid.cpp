@@ -29,9 +29,15 @@ int main() {
   static_assert(z[3] == 2 && z[1] == 10);
   assert(z[i] == 2);
 
-  static_assert(solid::hash(1) == 1);
+  static_assert(solid::hash<int>{}(1) == 1);
 
-  constexpr solid::array<int, 6> d = solid::append(c, 9);
+  constexpr solid::unordered_set<int, 5> d = {0, 1, 2, 3, 4};
+  static_assert(d.find(0));
+  static_assert(d.find(1));
+  static_assert(d.find(2));
+  static_assert(d.find(3));
+  static_assert(!d.find(5));
+  static_assert(!d.find(6));
 
   return 0;
 }
