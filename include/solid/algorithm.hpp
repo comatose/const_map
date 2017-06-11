@@ -34,6 +34,20 @@ constexpr RandomIt partition(RandomIt first, RandomIt last){
   return first;
 }
 
+template<class RandomIt, class Compare>
+constexpr RandomIt partition(RandomIt first, RandomIt last, Compare comp){
+  --last;
+  RandomIt it = first;
+  for(; it != last; ++it){
+    if(comp(*it, *last)){
+      swap(*it, *first);
+      first++;
+    }
+  }
+  swap(*first, *last);
+  return first;
+}
+
 template<class RandomIt>
 constexpr void quick_sort(RandomIt first, RandomIt last){
   if(first >= last) return;
@@ -41,6 +55,15 @@ constexpr void quick_sort(RandomIt first, RandomIt last){
   RandomIt pivot = partition(first, last);
   quick_sort(first, pivot);
   quick_sort(pivot + 1, last);
+}
+
+template<class RandomIt, class Compare>
+constexpr void quick_sort(RandomIt first, RandomIt last, Compare comp){
+  if(first >= last) return;
+
+  RandomIt pivot = partition(first, last, comp);
+  quick_sort(first, pivot, comp);
+  quick_sort(pivot + 1, last, comp);
 }
 
 template<class T>
