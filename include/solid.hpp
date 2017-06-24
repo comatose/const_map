@@ -3,6 +3,7 @@
 
 #include "solid/algorithm.hpp"
 #include "solid/array.hpp"
+#include "solid/math.hpp"
 #include "solid/ordered_map.hpp"
 #include "solid/ordered_set.hpp"
 #include "solid/pair.hpp"

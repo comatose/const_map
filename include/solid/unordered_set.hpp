@@ -75,24 +75,16 @@ class unordered_set {
     for(const auto& k : init) {
       auto i = indexer_.index_of(k);
       container_[i] = k;
-      occupied_[i] = true;
     }
   }
 
-  constexpr bool find(const T& k) {
-    auto i = indexer_.index_of(k);
-    return occupied_[i] && container_[i] == k;
-  }
-
-  constexpr bool find(const T& k) const {
-    auto i = indexer_.index_of(k);
-    return occupied_[i] && container_[i] == k;
+  constexpr bool contains(const T& k) const {
+    return container_[indexer_.index_of(k)] == k;
   }
 
  private:
   Indexer indexer_{};
   array<T, N> container_{};
-  array<bool, N> occupied_{};
 };
 
 }
