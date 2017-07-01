@@ -13,34 +13,50 @@ namespace solid {
 
 template<typename Key, typename Value, std::size_t N>
 class ordered_map {
+  struct key_comparer {
+    template<class P>
+    constexpr bool operator()(const P& lhs, const P& rhs) {
+      return lhs.first < rhs.first;
+    }
+  };
+
  public:
+  using value_type = pair<Key, Value>;
+  using const_iterator = const value_type*;
+
   constexpr ordered_map() = default;
 
-  constexpr ordered_map(std::initializer_list<pair<Key, Value>> init) {
-    auto kit = keys_.begin();
-    for(const auto& entry : init)
-      *(kit++) = entry.first;
-    quick_sort(keys_.begin(), keys_.end());
-
-    for(const auto& entry : init)
-      values_[index_of(entry.first)] = entry.second;
+  constexpr ordered_map(std::initializer_list<value_type> init)
+  : elements_{init} {
+    quick_sort(elements_.begin(), elements_.end(), key_comparer{});
   }
 
-  constexpr Value& operator[](const Key& key) {
-    return values_[index_of(key)];
+  constexpr const_iterator begin() const {
+    return &elements_[0];
+  }
+
+  constexpr const_iterator end() const {
+    return &elements_[N];
+  }
+
+  constexpr const_iterator cbegin() const {
+    return &elements_[0];
+  }
+
+  constexpr const_iterator cend() const {
+    return &elements_[N];
   }
 
   constexpr const Value& operator[](const Key& key) const {
-    return values_[index_of(key)];
+    return find(key)->second;
+  }
+
+  constexpr const_iterator find(const Key& k) const {
+    return binary_search(elements_.begin(), elements_.end(), value_type{k, Value{}}, key_comparer{});
   }
 
  private:
-  array<Key, N> keys_{};
-  array<Value, N> values_{};
-
-  constexpr std::size_t index_of(const Key& k) const {
-    return binary_search(keys_.begin(), keys_.end(), k) - keys_.begin();
-  }
+  array<value_type, N> elements_{};
 };
 
 }

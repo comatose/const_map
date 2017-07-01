@@ -11,24 +11,16 @@ namespace solid {
 template<typename T, std::size_t N>
 class ordered_set {
  public:
-  using iterator = T*;
+  using value_type = T;
   using const_iterator = const T*;
 
   constexpr ordered_set(std::initializer_list<T> init)
   : elements_(init) {
-    quick_sort(begin(), end());
+    quick_sort(elements_.begin(), elements_.end());
   }
 
   constexpr bool contains(const T& k) const {
-    return binary_search(cbegin(), cend(), k) != cend();
-  }
-
-  constexpr iterator begin() {
-    return &elements_[0];
-  }
-
-  constexpr iterator end() {
-    return &elements_[N];
+    return binary_search(begin(), end(), k) != end();
   }
 
   constexpr const_iterator begin() const {
@@ -46,6 +38,7 @@ class ordered_set {
   constexpr const_iterator cend() const {
     return &elements_[N];
   }
+
  private:
   array<T, N> elements_{};
 };

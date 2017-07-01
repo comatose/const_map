@@ -64,7 +64,6 @@ struct simple_indexer {
 template<typename T, std::size_t N, class Indexer = simple_indexer<T, N>>
 class unordered_set {
  public:
-  using iterator = T*;
   using const_iterator = const T*;
   using value_type = T;
 
@@ -74,17 +73,33 @@ class unordered_set {
   : indexer_{init} {
     for(const auto& k : init) {
       auto i = indexer_.index_of(k);
-      container_[i] = k;
+      elements_[i] = k;
     }
   }
 
   constexpr bool contains(const T& k) const {
-    return container_[indexer_.index_of(k)] == k;
+    return elements_[indexer_.index_of(k)] == k;
+  }
+
+  constexpr const_iterator begin() const {
+    return &elements_[0];
+  }
+
+  constexpr const_iterator end() const {
+    return &elements_[N];
+  }
+
+  constexpr const_iterator cbegin() const {
+    return &elements_[0];
+  }
+
+  constexpr const_iterator cend() const {
+    return &elements_[N];
   }
 
  private:
   Indexer indexer_{};
-  array<T, N> container_{};
+  array<T, N> elements_{};
 };
 
 }

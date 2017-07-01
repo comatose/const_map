@@ -18,11 +18,18 @@ TEST_CASE("solid array", "[array]") {
 
 TEST_CASE("solid ordered_set", "[ordered_set]") {
   constexpr solid::ordered_set<int, 5> b = {3, 1, 10, 4, 8};
-  static_assert(b.contains(3) && b.contains(1) && b.contains(10) && b.contains(4) && b.contains(8));
-  static_assert(!b.contains(30) && !b.contains(40) && !b.contains(100));
+  static_assert(b.end() - b.begin() == 5);
+  static_assert(b.contains(3));
+  static_assert(b.contains(1));
+  static_assert(b.contains(10));
+  static_assert(b.contains(4));
+  static_assert(b.contains(8));
+  static_assert(!b.contains(30));
+  static_assert(!b.contains(40));
+  static_assert(!b.contains(100));
 
   SECTION("all elements are ordered in the ordered_set") {
-    auto bit = b.cbegin();
+    auto bit = b.begin();
     REQUIRE(bit[0] == 1);
     REQUIRE(bit[1] == 3);
     REQUIRE(bit[2] == 4);
@@ -38,13 +45,31 @@ TEST_CASE("solid ordered_set", "[ordered_set]") {
 
 TEST_CASE("solid ordered_map", "[ordered_map]") {
   constexpr solid::ordered_map<int, int, 2> z = {{3, 2}, {1, 10}};
-  static_assert(z[3] == 2 && z[1] == 10);
-  int i = 3;
-  REQUIRE(z[i] == 2);
+  static_assert(z[3] == 2);
+  static_assert(z[1] == 10);
+  static_assert(z.find(3) != z.end());
+  static_assert(z.find(3)->first == 3);
+  static_assert(z.find(3)->second == 2);
+  static_assert(z.find(1) != z.end());
+  static_assert(z.find(1)->first == 1);
+  static_assert(z.find(1)->second == 10);
+  static_assert(z.find(100) == z.end());
+
+  SECTION("all elements are ordered in the ordered_map") {
+    auto zit = z.begin();
+    REQUIRE(zit[0].first == 1);
+    REQUIRE(zit[1].first == 3);
+  }
+
+  SECTION("test find in runtime") {
+    for(const auto& p : z)
+      REQUIRE(z.find(p.first) != z.end());
+  }
 }
 
 TEST_CASE("solid unordered_set", "[unordered_set]") {
   constexpr solid::unordered_set<int, 5> d = {0, 1, 2, 3, 4};
+  static_assert(d.end() - d.begin() == 5);
   static_assert(d.contains(0));
   static_assert(d.contains(1));
   static_assert(d.contains(2));
@@ -53,8 +78,8 @@ TEST_CASE("solid unordered_set", "[unordered_set]") {
   static_assert(!d.contains(5));
   static_assert(!d.contains(6));
 
-  int i = 3;
-  solid::unordered_set<int, 5> f = {0, 1, 2, i, 4};
-  REQUIRE(f.contains(i));
-  REQUIRE(!f.contains(i*100));
+  SECTION("test contains in runtime") {
+    for(const auto& i : d)
+      REQUIRE(d.contains(i));
+  }
 }

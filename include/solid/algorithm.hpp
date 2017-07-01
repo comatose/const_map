@@ -87,6 +87,21 @@ constexpr RandomIt binary_search(RandomIt first, RandomIt last, const V& value){
   return notfound;
 }
 
+template<class RandomIt, class V, class Compare>
+constexpr RandomIt binary_search(RandomIt first, RandomIt last, const V& value, Compare comp){
+  const RandomIt notfound = last;
+  while(first < last){
+    RandomIt mid = first + (last - first) / 2;
+    if(comp(*mid, value))
+      first = mid + 1;
+    else if(comp(value, *mid))
+      last = mid;
+    else
+      return mid;
+  }
+  return notfound;
+}
+
 template< class InputIt, class T, class BinaryOperation >
 constexpr T accumulate( InputIt first, InputIt last, T init, BinaryOperation op ) {
   for (; first != last; ++first) {
