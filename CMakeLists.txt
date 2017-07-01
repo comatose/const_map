@@ -8,13 +8,18 @@ find_package(Hana 1.1.0)
 add_executable(const_map const_map.cpp)
 add_dependencies(const_map Hana)
 
-add_executable(solid solid.cpp)
+target_include_directories(const_map PUBLIC
+  "${CMAKE_SOURCE_DIR}/include"
+  "${Hana_INCLUDE_DIRS}"
+)
+add_executable(solid tests-main.cpp tests-solid.cpp)
 add_dependencies(solid Hana)
 
-include_directories(
+target_include_directories(solid PUBLIC
   "${CMAKE_SOURCE_DIR}/include"
-  ${Hana_INCLUDE_DIRS}
+  "${CMAKE_SOURCE_DIR}/Catch/include"
 )
+
 list(APPEND CMAKE_CXX_FLAGS "-std=gnu++1z -O3")
 
 # set_property(TARGET const_map PROPERTY CXX_INCLUDE_WHAT_YOU_USE "iwyu")
