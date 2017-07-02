@@ -9,6 +9,7 @@ namespace solid {
 template<typename T, std::size_t N>
 class stack {
  public:
+  using value_type = T;
   using iterator = T*;
   using const_iterator = const T*;
 
@@ -69,6 +70,10 @@ class stack {
   }
 
   constexpr T& top() {
+    return elements_[size_ - 1];
+  }
+
+  constexpr const T& top() const {
     return elements_[size_ - 1];
   }
 

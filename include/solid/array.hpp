@@ -9,6 +9,7 @@ namespace solid {
 template<typename T, std::size_t N>
 class array {
  public:
+  using value_type = T;
   using iterator = T*;
   using const_iterator = const T*;
 

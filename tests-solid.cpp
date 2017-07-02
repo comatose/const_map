@@ -2,6 +2,10 @@
 
 #include "solid.hpp"
 
+#include <functional>
+#include <iostream>
+#include <numeric>
+
 using namespace std;
 
 template<typename>
@@ -81,18 +85,96 @@ TEST_CASE("solid ordered_map", "[ordered_map]") {
 }
 
 TEST_CASE("solid unordered_set", "[unordered_set]") {
-  constexpr solid::unordered_set<int, 5> d = {0, 1, 2, 3, 4};
-  static_assert(d.end() - d.begin() == 5);
-  static_assert(d.contains(0));
-  static_assert(d.contains(1));
-  static_assert(d.contains(2));
-  static_assert(d.contains(3));
-  static_assert(d.contains(4));
-  static_assert(!d.contains(5));
-  static_assert(!d.contains(6));
+  SECTION("each is unique with seed of 0.") {
+    constexpr solid::unordered_set<int, 5> d = {0, 1, 2, 3, 4};
+    static_assert(d.end() - d.begin() == 5);
+    static_assert(d.contains(0));
+    static_assert(d.contains(1));
+    static_assert(d.contains(2));
+    static_assert(d.contains(3));
+    static_assert(d.contains(4));
+    static_assert(!d.contains(5));
+    static_assert(!d.contains(6));
 
-  SECTION("test contains in runtime") {
-    for(const auto& i : d)
-      REQUIRE(d.contains(i));
+    SECTION("test contains in runtime") {
+      for(const auto& i : array<int, 5>{0, 1, 2, 3, 4}) {
+        REQUIRE(d.contains(i));
+      }
+    }
+  }
+
+  SECTION("there is some redundancy.") {
+    // in this case, we will have some false alarm.
+    constexpr solid::unordered_set<int, 11> d = {0, 1, 2, 15, 5, 7, 6};
+    static_assert(d.end() - d.begin() == 11);
+    static_assert(d.contains(0));
+    static_assert(d.contains(1));
+    static_assert(d.contains(2));
+    static_assert(d.contains(15));
+    static_assert(d.contains(5));
+    static_assert(d.contains(7));
+    static_assert(d.contains(6));
+    static_assert(!d.contains(35));
+    static_assert(!d.contains(69));
+
+    SECTION("test contains in runtime") {
+      for(const auto& i : array<int, 7>{0, 1, 2, 15, 5, 7, 6}) {
+        REQUIRE(d.contains(i));
+      }
+    }
+  }
+}
+
+TEST_CASE("solid table_indexer", "[table_indexer]") {
+  constexpr std::size_t N = 7;
+  constexpr solid::array<int, N> a = {0, 1, 2, 15, 5, 7, 6};
+  constexpr solid::table_indexer<int, N> indexer(a);
+
+  solid::array<bool, N> b{};
+  for(const auto& e : a) {
+    auto i = indexer.index_of(e);
+    REQUIRE(i < N);
+    b[i] = true;
+  }
+  REQUIRE(accumulate(b.begin(), b.end(), true, logical_and<bool>{}));
+}
+
+TEST_CASE("solid unordered_set with table_indexer", "[unordered_set]") {
+  SECTION("each is unique with seed of 0.") {
+    constexpr solid::unordered_set<int, 5, solid::table_indexer<int, 5>> d = {0, 1, 2, 3, 4};
+    static_assert(d.end() - d.begin() == 5);
+    static_assert(d.contains(0));
+    static_assert(d.contains(1));
+    static_assert(d.contains(2));
+    static_assert(d.contains(3));
+    static_assert(d.contains(4));
+    static_assert(!d.contains(5));
+    static_assert(!d.contains(6));
+
+    SECTION("test contains in runtime") {
+      for(const auto& i : array<int, 5>{0, 1, 2, 3, 4}) {
+        REQUIRE(d.contains(i));
+      }
+    }
+  }
+
+  SECTION("there are some collisions.") {
+    constexpr solid::unordered_set<int, 7, solid::table_indexer<int, 7>> d = {0, 1, 2, 15, 5, 7, 6};
+    static_assert(d.end() - d.begin() == 7);
+    static_assert(d.contains(0));
+    static_assert(d.contains(1));
+    static_assert(d.contains(2));
+    static_assert(d.contains(15));
+    static_assert(d.contains(5));
+    static_assert(d.contains(7));
+    static_assert(d.contains(6));
+    static_assert(!d.contains(35));
+    static_assert(!d.contains(69));
+
+    SECTION("test contains in runtime") {
+      for(const auto& i : array<int, 7>{0, 1, 2, 15, 5, 7, 6}) {
+        REQUIRE(d.contains(i));
+      }
+    }
   }
 }
