@@ -34,8 +34,8 @@ constexpr bool unique_with(const Ts& ts, std::size_t d) {
 }
 
 template<std::size_t N, class Ts, class Hash = solid::hash<typename Ts::value_type>>
-constexpr std::size_t find_min(const Ts& ts, std::size_t maxd = std::numeric_limits<std::size_t>::max()) {
-  for(std::size_t d = 0; d < maxd; ++d) {
+constexpr std::size_t find_min(const Ts& ts, std::size_t mind = 0, std::size_t maxd = std::numeric_limits<std::size_t>::max()) {
+  for(std::size_t d = mind; d < maxd; ++d) {
     if(unique_with<Ts, N, Hash>(ts, d))
       return d;
   }
@@ -59,6 +59,59 @@ struct simple_indexer {
 
  private:
   std::size_t d{};
+};
+
+template<class T, std::size_t N, class Hash = solid::hash<T>>
+struct table_indexer {
+  template<class Ts>
+  constexpr table_indexer(const Ts& ts) {
+    static_assert(std::is_same<typename Ts::value_type, T>::value);
+
+    stack<T, N> groups[N];
+    for(const auto& e : ts)
+      groups[internal::hash_with<T, Hash>(0, e) % N].push(e);
+
+    quick_sort(groups.begin(), groups.end(), size_reverse_comparer{});
+    constexpr auto maxd = std::numeric_limits<int>::max();
+    bool used[N] = {false};
+    for(const stack<T, N>& group : groups) {
+      if(group.size() == 0)
+        break;
+
+      if(group.size() == 1) {
+      }
+
+      stack<int, N> slots;
+      for(int d = 1; d < maxd; ++d) {
+        d = internal::find_min<N, stack<T, N>, Hash>(group, d, maxd);
+        if(d == maxd)
+          break; // TODO: handle this case
+
+        if(find(used.begin(), used.end(), d) != used.end()) // already used, try again
+          continue;
+
+        table_[internal::hash_with<T, Hash>(0, group.top()) % N] = d;
+      }
+    }
+
+  }
+
+  constexpr std::size_t index_of(std::size_t i) const {
+    if(table_[i] < 0)
+      return -table_[i];
+
+    return internal::hash_with<T, Hash>(table_[i], i) % N;
+  }
+
+ private:
+  int table_[N]{};
+
+  struct size_reverse_comparer {
+    template<class U>
+    constexpr bool operator()(const U& lhs, const U& rhs) {
+      return rhs.size() < lhs.size();
+    }
+  };
 };
 
 template<typename T, std::size_t N, class Indexer = simple_indexer<T, N>>

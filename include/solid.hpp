@@ -7,6 +7,7 @@
 #include "solid/ordered_map.hpp"
 #include "solid/ordered_set.hpp"
 #include "solid/pair.hpp"
+#include "solid/stack.hpp"
 #include "solid/unordered_set.hpp"
 
 #endif // __SOLID_HPP

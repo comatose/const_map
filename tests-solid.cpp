@@ -16,6 +16,19 @@ TEST_CASE("solid array", "[array]") {
   constexpr solid::array<solid::pair<int, int>, 2> c = {{1, 2}, {3, 10}};
 }
 
+TEST_CASE("solid stack", "[stack]") {
+  constexpr solid::stack<int, 10> a = {3, 1, 10, 4, 8};
+  static_assert(a.size() == 5);
+  static_assert(a.capacity() == 10);
+
+  solid::stack<int, 10> b(a.begin(), a.end());
+  REQUIRE(b.size() == 5);
+  b.push(9);
+  REQUIRE(b.size() == 6);
+  REQUIRE(b.pop() == 9);
+  REQUIRE(b.size() == 5);
+}
+
 TEST_CASE("solid ordered_set", "[ordered_set]") {
   constexpr solid::ordered_set<int, 5> b = {3, 1, 10, 4, 8};
   static_assert(b.end() - b.begin() == 5);
