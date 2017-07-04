@@ -24,19 +24,19 @@ class ordered_set {
   }
 
   constexpr const_iterator begin() const {
-    return &elements_[0];
+    return elements_.begin();
   }
 
   constexpr const_iterator end() const {
-    return &elements_[N];
+    return elements_.end();
   }
 
   constexpr const_iterator cbegin() const {
-    return &elements_[0];
+    return elements_.cbegin();
   }
 
   constexpr const_iterator cend() const {
-    return &elements_[N];
+    return elements_.cend();
   }
 
  private:

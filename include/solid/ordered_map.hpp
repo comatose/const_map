@@ -32,23 +32,26 @@ class ordered_map {
   }
 
   constexpr const_iterator begin() const {
-    return &elements_[0];
+    return elements_.begin();
   }
 
   constexpr const_iterator end() const {
-    return &elements_[N];
+    return elements_.end();
   }
 
   constexpr const_iterator cbegin() const {
-    return &elements_[0];
+    return elements_.cbegin();
   }
 
   constexpr const_iterator cend() const {
-    return &elements_[N];
+    return elements_.cend();
   }
 
   constexpr const Value& operator[](const Key& key) const {
-    return find(key)->second;
+    auto it = find(key);
+    assert(it != cend());
+
+    return it->second;
   }
 
   constexpr const_iterator find(const Key& k) const {

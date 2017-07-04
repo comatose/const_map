@@ -26,8 +26,10 @@ template<class T, std::size_t N, class Hash = solid::hash<T>>
 struct simple_indexer {
 
   template<class Ts>
-  constexpr simple_indexer(const Ts& ts)
-  : d(find_min(ts)) {
+  constexpr simple_indexer(const Ts& ts) {
+    assert(ts.size() <= N);
+    d = find_min(ts);
+    assert(d != std::numeric_limits<std::size_t>::max());
     static_assert(std::is_same<typename Ts::value_type, T>::value);
   }
 
@@ -67,6 +69,7 @@ struct table_indexer {
   template<class Ts>
   constexpr table_indexer(const Ts& ts) {
     static_assert(std::is_same<typename Ts::value_type, T>::value);
+    assert(ts.size() <= N);
 
     array<stack<T, N>, N> groups;
     for(const auto& e : ts)
@@ -91,8 +94,7 @@ struct table_indexer {
       }
 
       int d = find_min(group, used, 1, maxd);
-      if(d == maxd) // TODO: handle this case
-        break;
+      assert(d != maxd);
 
       table_[internal::hash_with<T, Hash>(0, group.top()) % N] = d;
     }
@@ -152,6 +154,7 @@ class unordered_set {
 
   constexpr unordered_set(std::initializer_list<T> init)
   : indexer_{init} {
+
     for(const auto& k : init) {
       auto i = indexer_.index_of(k);
       elements_[i] = k;
@@ -163,19 +166,19 @@ class unordered_set {
   }
 
   constexpr const_iterator begin() const {
-    return &elements_[0];
+    return elements_.begin();
   }
 
   constexpr const_iterator end() const {
-    return &elements_[N];
+    return elements_.end();
   }
 
   constexpr const_iterator cbegin() const {
-    return &elements_[0];
+    return elements_.cbegin();
   }
 
   constexpr const_iterator cend() const {
-    return &elements_[N];
+    return elements_.cend();
   }
 
  private:

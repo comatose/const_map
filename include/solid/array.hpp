@@ -2,6 +2,7 @@
 #define __SOLID_ARRAY_HPP
 
 #include <algorithm>
+#include <cassert>
 #include <cstddef>
 
 namespace solid {
@@ -21,10 +22,13 @@ class array {
 
   template<class InputIt>
   constexpr array(InputIt first, InputIt last) {
+    assert(first <= last);
+    assert(last - first <= N);
     copy(first, last, begin());
   }
 
   constexpr array(std::initializer_list<T> init) {
+    assert(init.size() <= N);
     copy(init.begin(), init.end(), begin());
   }
 
@@ -33,10 +37,12 @@ class array {
   }
 
   constexpr T& operator[](std::size_t i) {
+    assert(i < N);
     return elements_[i];
   }
 
   constexpr const T& operator[](std::size_t i) const {
+    assert(i < N);
     return elements_[i];
   }
 

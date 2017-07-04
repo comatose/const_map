@@ -1,10 +1,12 @@
 #include "catch.hpp"
 
-#include "solid.hpp"
-
 #include <functional>
 #include <iostream>
 #include <numeric>
+
+#define private public
+
+#include "solid.hpp"
 
 using namespace std;
 
@@ -103,24 +105,12 @@ TEST_CASE("solid unordered_set", "[unordered_set]") {
     }
   }
 
-  SECTION("there is some redundancy.") {
-    // in this case, we will have some false alarm.
-    constexpr solid::unordered_set<int, 11> d = {0, 1, 2, 15, 5, 7, 6};
-    static_assert(d.end() - d.begin() == 11);
-    static_assert(d.contains(0));
-    static_assert(d.contains(1));
-    static_assert(d.contains(2));
-    static_assert(d.contains(15));
-    static_assert(d.contains(5));
-    static_assert(d.contains(7));
-    static_assert(d.contains(6));
-    static_assert(!d.contains(35));
-    static_assert(!d.contains(69));
+  SECTION("some redundancy can prevent failure in building unordered_set") {
+    constexpr solid::unordered_set<int, 11> d = {1, 15, 5, 7, 6, 22, 11};
 
-    SECTION("test contains in runtime") {
-      for(const auto& i : array<int, 7>{0, 1, 2, 15, 5, 7, 6}) {
-        REQUIRE(d.contains(i));
-      }
+    SECTION("However, 0 can be a false positive.") {
+      static_assert(d.contains(0)); // WARNING: false positive
+      REQUIRE(d.contains(0));
     }
   }
 }
