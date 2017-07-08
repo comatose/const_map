@@ -25,6 +25,14 @@ target_include_directories(solid PRIVATE
   "${CMAKE_SOURCE_DIR}/Catch/include"
 )
 
+file(GLOB_RECURSE all_source_files "include/*[ch]pp" "tests-*.cpp")
+
+find_program(CLANG_FORMAT clang-format)
+if(CLANG_FORMAT AND all_source_files)
+  message(STATUS "FOUND clang-format.")
+  add_custom_target(clang-format ALL ${CLANG_FORMAT} -style=Google -sort-includes -i ${all_source_files})
+endif()
+
 target_compile_options(solid PRIVATE -std=gnu++1z -O3 -fconstexpr-steps=10000000 -fconstexpr-depth=1000)
 
 # set_property(TARGET const_map PROPERTY CXX_INCLUDE_WHAT_YOU_USE "iwyu")

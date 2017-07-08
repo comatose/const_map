@@ -13,4 +13,4 @@
 #include "solid/unordered_set.hpp"
 // IWYU pragma: end_exports
 
-#endif // __SOLID_HPP
+#endif  // __SOLID_HPP

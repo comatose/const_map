@@ -3,11 +3,10 @@
 
 namespace solid {
 
-template<typename First, typename Second>
-struct pair{
+template <typename First, typename Second>
+struct pair {
   First first;
   Second second;
 };
-
 }
-#endif // __SOLID_PAIR_HPP
+#endif  // __SOLID_PAIR_HPP
