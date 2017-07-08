@@ -36,7 +36,9 @@ TEST_CASE("solid stack", "[stack]") {
 }
 
 TEST_CASE("solid ordered_set", "[ordered_set]") {
-  constexpr solid::ordered_set<int, 5> b = {3, 1, 10, 4, 8};
+  constexpr int a[] = {3, 1, 10, 4, 8};
+  constexpr auto b = solid::make_ordered_set(a);
+  // constexpr solid::ordered_set<int, 5> b = {3, 1, 10, 4, 8};
   static_assert(b.end() - b.begin() == 5);
   static_assert(b.contains(3));
   static_assert(b.contains(1));
@@ -116,17 +118,17 @@ TEST_CASE("solid unordered_set", "[unordered_set]") {
 }
 
 TEST_CASE("solid table_indexer", "[table_indexer]") {
-  constexpr std::size_t N = 7;
-  constexpr solid::array<int, N> a = {0, 1, 2, 15, 5, 7, 6};
+  constexpr int a[] = {1, 2, 15, 5, 7, 6};
+  constexpr size_t N = 6;
   constexpr solid::table_indexer<int, N> indexer(a);
 
   solid::array<bool, N> b{};
   for(const auto& e : a) {
     auto i = indexer.index_of(e);
     REQUIRE(i < N);
+    REQUIRE(!b[i]);
     b[i] = true;
   }
-  REQUIRE(accumulate(b.begin(), b.end(), true, logical_and<bool>{}));
 }
 
 TEST_CASE("solid unordered_set with table_indexer", "[unordered_set]") {

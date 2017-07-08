@@ -81,6 +81,11 @@ constexpr array<T, N+1> append(const array<T, N>& a, T v) {
   return r;
 }
 
+template<typename T, size_t N>
+constexpr array<T, N> make_array(const T (&ar)[N]) {
+  return {&ar[0], &ar[N]};
+}
+
 }
 
 namespace std {

@@ -62,5 +62,10 @@ class ordered_map {
   array<value_type, N> elements_{};
 };
 
+template<typename Key, typename Value, size_t N>
+constexpr ordered_map<Key, Value, N> make_ordered_map(const pair<Key, Value> (&ar)[N]) {
+  return {&ar[0], &ar[N]};
+}
+
 }
 #endif // __SOLID_ORDERED_MAP_HPP

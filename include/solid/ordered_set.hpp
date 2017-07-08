@@ -15,7 +15,14 @@ class ordered_set {
   using const_iterator = const T*;
 
   constexpr ordered_set(std::initializer_list<T> init)
-  : elements_(init) {
+  : ordered_set(init.begin(), init.end()) {
+  }
+
+  template<class InputIt>
+  constexpr ordered_set(InputIt first, InputIt last)
+  : elements_(first, last) {
+    assert(first <= last);
+    assert(last - first == N);
     quick_sort(elements_.begin(), elements_.end());
   }
 
@@ -42,6 +49,11 @@ class ordered_set {
  private:
   array<T, N> elements_{};
 };
+
+template<typename T, size_t N>
+constexpr ordered_set<T, N> make_ordered_set(const T (&ar)[N]) {
+  return {&ar[0], &ar[N]};
+}
 
 }
 #endif // __SOLID_ORDERED_SET_HPP
