@@ -1,9 +1,12 @@
 #ifndef __SOLID_ARRAY_HPP
 #define __SOLID_ARRAY_HPP
 
-#include <algorithm>
 #include <cassert>
 #include <cstddef>
+
+#include <algorithm>
+#include <iterator>
+#include <type_traits>
 
 namespace solid {
 
@@ -20,16 +23,21 @@ class array {
   : array(other.cbegin(), other.cend()) {
   }
 
+  constexpr array(std::initializer_list<T> init)
+  : array{init.begin(), init.end()} {
+  }
+
+  template<class Ts>
+  constexpr array(const Ts& ts)
+  : array{std::begin(ts), std::end(ts)} {
+  }
+
   template<class InputIt>
   constexpr array(InputIt first, InputIt last) {
+    static_assert(std::is_same<std::decay_t<typename std::iterator_traits<InputIt>::value_type>, T>::value);
     assert(first <= last);
     assert(last - first <= N);
     copy(first, last, begin());
-  }
-
-  constexpr array(std::initializer_list<T> init) {
-    assert(init.size() <= N);
-    copy(init.begin(), init.end(), begin());
   }
 
   constexpr std::size_t size() const {

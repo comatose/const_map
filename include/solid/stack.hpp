@@ -1,8 +1,10 @@
 #ifndef __SOLID_STACK_HPP
 #define __SOLID_STACK_HPP
 
-#include <algorithm>
 #include <cstddef>
+
+#include <algorithm>
+#include <iterator>
 
 namespace solid {
 
@@ -19,14 +21,19 @@ class stack {
   : stack(other.cbegin(), other.cend()) {
   }
 
+  constexpr stack(std::initializer_list<T> init)
+  : stack(init.begin(), init.end()) {
+  }
+
+  template<class Ts>
+  constexpr stack(const Ts& ts)
+  : stack{std::begin(ts), std::end(ts)} {
+  }
+
   template<class InputIt>
   constexpr stack(InputIt first, InputIt last) {
     copy(first, last, begin());
     size_ = last - first;
-  }
-
-  constexpr stack(std::initializer_list<T> init)
-      : stack(init.begin(), init.end()) {
   }
 
   constexpr std::size_t capacity() const {

@@ -144,6 +144,14 @@ constexpr OutputIt transform(InputIt first1, InputIt last1, OutputIt d_first, Un
   return d_first;
 }
 
+template<class InputIt, class UnaryFunction>
+constexpr UnaryFunction for_each(InputIt first, InputIt last, UnaryFunction f) {
+  for (; first != last; ++first) {
+    f(*first);
+  }
+  return f;
+}
+
 template<typename T, typename = void>
 struct hash {
 };

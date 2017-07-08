@@ -5,6 +5,8 @@
 #include "algorithm.hpp"
 
 #include <initializer_list>
+#include <iterator>
+#include <type_traits>
 
 namespace solid {
 
@@ -18,12 +20,21 @@ class ordered_set {
   : ordered_set(init.begin(), init.end()) {
   }
 
+  template<class Ts>
+  constexpr ordered_set(const Ts& ts)
+  : ordered_set{std::begin(ts), std::end(ts)} {
+  }
+
   template<class InputIt>
   constexpr ordered_set(InputIt first, InputIt last)
-  : elements_(first, last) {
-    assert(first <= last);
-    assert(last - first == N);
+  : elements_((assert(first <= last && last - first == N), first), last) {
+    static_assert(std::is_same<std::decay_t<typename std::iterator_traits<InputIt>::value_type>, T>::value);
+
     quick_sort(elements_.begin(), elements_.end());
+  }
+
+  constexpr std::size_t size() const {
+    return N;
   }
 
   constexpr bool contains(const T& k) const {
@@ -47,12 +58,12 @@ class ordered_set {
   }
 
  private:
-  array<T, N> elements_{};
+  array<T, N> elements_;
 };
 
 template<typename T, size_t N>
 constexpr ordered_set<T, N> make_ordered_set(const T (&ar)[N]) {
-  return {&ar[0], &ar[N]};
+  return {ar};
 }
 
 }
