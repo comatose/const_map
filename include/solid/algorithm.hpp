@@ -72,6 +72,32 @@ constexpr T quick_sort(T a) {
   return a;
 }
 
+template<class RandomIt>
+constexpr void bubble_sort(RandomIt first, RandomIt last){
+  for(auto i = last - 1; i > first; --i) {
+    for(auto j = first; j < i; ++j) {
+      if(*j > *(j + 1))
+        swap(*j, *(j + 1));
+    }
+  }
+}
+
+template<class RandomIt, class Compare>
+constexpr void bubble_sort(RandomIt first, RandomIt last, Compare comp){
+  for(auto i = last - 1; i > first; --i) {
+    for(auto j = first; j < i; ++j) {
+      if(comp(*(j+1), *j))
+        swap(*j, *(j + 1));
+    }
+  }
+}
+
+template<class T>
+constexpr T bubble_sort(T a) {
+  bubble_sort(a.begin(), a.end());
+  return a;
+}
+
 template<class RandomIt, class V>
 constexpr RandomIt binary_search(RandomIt first, RandomIt last, const V& value){
   RandomIt notfound = last;

@@ -25,7 +25,7 @@ target_include_directories(solid PRIVATE
   "${CMAKE_SOURCE_DIR}/Catch/include"
 )
 
-target_compile_options(solid PRIVATE -std=gnu++1z -O3)
+target_compile_options(solid PRIVATE -std=gnu++1z -O3 -fconstexpr-steps=10000000 -fconstexpr-depth=1000)
 
 # set_property(TARGET const_map PROPERTY CXX_INCLUDE_WHAT_YOU_USE "iwyu")
 # set_property(TARGET const_map PROPERTY CXX_STANDARD 14)

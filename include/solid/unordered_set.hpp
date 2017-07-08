@@ -66,16 +66,21 @@ struct simple_indexer {
 
 template<class T, std::size_t N, class Hash = solid::hash<T>>
 struct table_indexer {
+  // constexpr table_indexer(const T (&ar)[N]) {
+
+  // }
+
   template<class Ts>
   constexpr table_indexer(const Ts& ts) {
-    static_assert(std::is_same<typename Ts::value_type, T>::value);
-    assert(ts.size() <= N);
+    // static_assert(std::is_same<typename Ts::value_type, T>::value);
+    // assert(ts.size() <= N);
 
     array<stack<T, N>, N> groups;
     for(const auto& e : ts)
       groups[internal::hash_with<T, Hash>(0, e) % N].push(e);
 
-    quick_sort(groups.begin(), groups.end(), size_reverse_comparer{});
+    // use bubble_sort to avoid too deep recursion.
+    bubble_sort(groups.begin(), groups.end(), size_reverse_comparer{});
     constexpr auto maxd = std::numeric_limits<int>::max();
     array<bool, N> used{};
     for(const stack<T, N>& group : groups) {
