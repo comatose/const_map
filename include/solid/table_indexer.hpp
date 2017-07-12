@@ -1,8 +1,5 @@
-#ifndef __SOLID_INDEXER_HPP
-#define __SOLID_INDEXER_HPP
-
-#include "array.hpp"
-#include "stack.hpp"
+#ifndef __SOLID_TABLE_INDEXER_HPP
+#define __SOLID_TABLE_INDEXER_HPP
 
 #include <cassert>
 #include <cstddef>
@@ -11,60 +8,11 @@
 #include <iterator>
 #include <type_traits>
 
+#include "array.hpp"
+#include "hash.hpp"
+#include "stack.hpp"
+
 namespace solid {
-
-namespace internal {
-
-template <typename T, class Hash = solid::hash<T>>
-constexpr std::size_t hash_with(std::size_t d, const T& value) {
-  return ((d * 0x01000193) ^ Hash{}(value)) & 0xffffffff;
-}
-}
-
-template <class T, std::size_t N, class Hash = solid::hash<T>>
-struct simple_indexer {
-  constexpr simple_indexer(std::initializer_list<T> init)
-      : simple_indexer{init.begin(), init.end()} {}
-
-  template <class Ts>
-  constexpr simple_indexer(const Ts& ts)
-      : simple_indexer(std::begin(ts), std::end(ts)) {}
-
-  template <class InputIt>
-  constexpr simple_indexer(InputIt first, InputIt last) {
-    static_assert(
-        std::is_same<
-            std::decay_t<typename std::iterator_traits<InputIt>::value_type>,
-            T>::value);
-    assert(first <= last);
-    assert(last - first <= N);
-
-    for (d = 0; d < std::numeric_limits<std::size_t>::max(); ++d) {
-      if (unique_with(first, last, d)) break;
-    }
-    assert(d != std::numeric_limits<std::size_t>::max());
-  }
-
-  constexpr std::size_t index_of(const T& e) const {
-    return internal::hash_with<T, Hash>(d, e) % N;
-  }
-
- private:
-  std::size_t d{};
-
-  template <class InputIt>
-  constexpr bool unique_with(InputIt first, InputIt last, std::size_t d) {
-    bool used[N]{false};
-    for (; first < last; ++first) {
-      auto hv = internal::hash_with<T, Hash>(d, *first) % N;
-      if (used[hv]) {
-        return false;
-      }
-      used[hv] = true;
-    }
-    return true;
-  }
-};
 
 template <class T, std::size_t N, class Hash = solid::hash<T>>
 struct table_indexer {
@@ -159,4 +107,4 @@ struct table_indexer {
 };
 }
 
-#endif  // __SOLID_INDEXER_HPP
+#endif  // __SOLID_TABLE_INDEXER_HPP

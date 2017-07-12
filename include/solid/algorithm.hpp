@@ -1,8 +1,9 @@
 #ifndef __SOLID_ALGORITHM_HPP
 #define __SOLID_ALGORITHM_HPP
 
-#include <algorithm>
 #include <cstddef>
+
+#include <algorithm>
 
 namespace solid {
 

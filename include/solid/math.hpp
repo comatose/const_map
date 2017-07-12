@@ -1,9 +1,9 @@
 #ifndef __SOLID_MATH_HPP
 #define __SOLID_MATH_HPP
 
-#include <type_traits>
-
 #include <cstdint>
+
+#include <type_traits>
 
 namespace solid {
 

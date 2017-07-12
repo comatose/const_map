@@ -1,18 +1,18 @@
 #ifndef __SOLID_UNORDERED_SET_HPP
 #define __SOLID_UNORDERED_SET_HPP
 
-#include "algorithm.hpp"
-#include "array.hpp"
-#include "indexer.hpp"
+#include <cstddef>
 
 #include <bitset>
 #include <initializer_list>
 
-#include <cstddef>
+#include "algorithm.hpp"
+#include "array.hpp"
+#include "hash_indexer.hpp"
 
 namespace solid {
 
-template <typename T, std::size_t N, class Indexer = simple_indexer<T, N>>
+template <typename T, std::size_t N, class Indexer = hash_indexer<T, N>>
 class unordered_set {
  public:
   using const_iterator = const T*;

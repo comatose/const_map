@@ -1,15 +1,16 @@
 #ifndef __SOLID_ORDERED_MAP_HPP
 #define __SOLID_ORDERED_MAP_HPP
 
-#include "array.hpp"
-#include "ordered_set.hpp"
-#include "pair.hpp"
+#include <cstddef>
 
 #include <algorithm>
-#include <cstddef>
 #include <initializer_list>
 #include <iterator>
 #include <type_traits>
+
+#include "array.hpp"
+#include "ordered_set.hpp"
+#include "pair.hpp"
 
 namespace solid {
 

@@ -1,12 +1,12 @@
 #ifndef __SOLID_ORDERED_SET_HPP
 #define __SOLID_ORDERED_SET_HPP
 
-#include "algorithm.hpp"
-#include "array.hpp"
-
 #include <initializer_list>
 #include <iterator>
 #include <type_traits>
+
+#include "algorithm.hpp"
+#include "array.hpp"
 
 namespace solid {
 
