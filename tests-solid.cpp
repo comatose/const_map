@@ -1,5 +1,6 @@
 #include <cstddef>
-// #include <iostream>
+
+#include <iostream>
 
 #include "catch.hpp"
 
@@ -106,10 +107,8 @@ TEST_CASE("solid unordered_set", "[unordered_set]") {
 
   SECTION("some redundancy can prevent failure in building unordered_set") {
     constexpr solid::unordered_set<int, 11> d = {1, 15, 5, 7, 6, 22, 11};
-
-    SECTION("However, 0 can be a false positive.") {
-      static_assert(d.contains(0));  // WARNING: false positive
-      REQUIRE(d.contains(0));
+    for (const auto& e : d) {
+      REQUIRE(d.contains(e));
     }
   }
 }
@@ -167,5 +166,18 @@ TEST_CASE("solid unordered_set with table_indexer", "[unordered_set]") {
         REQUIRE(d.contains(i));
       }
     }
+  }
+}
+
+TEST_CASE("solid bitset", "[bitset]") {
+  SECTION("") {
+    solid::bitset<100> bs;
+    REQUIRE(bs.count() == 0);
+    bs.set(77);
+    REQUIRE(bs.count() == 1);
+    REQUIRE(bs.test(77));
+    bs.reset(77);
+    REQUIRE(bs.count() == 0);
+    REQUIRE(!bs.test(77));
   }
 }

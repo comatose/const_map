@@ -12,7 +12,6 @@ constexpr std::size_t hash_with(std::size_t d, const T& value) {
   return ((d * 0x01000193) ^ Hash{}(value)) & 0xffffffff;
 }
 }
-
 }
 
 #endif  // __SOLID_HASH_HPP

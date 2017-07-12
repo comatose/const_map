@@ -3,11 +3,11 @@
 
 #include <cstddef>
 
-#include <bitset>
 #include <initializer_list>
 
 #include "algorithm.hpp"
 #include "array.hpp"
+#include "bitset.hpp"
 #include "hash_indexer.hpp"
 
 namespace solid {
@@ -15,7 +15,50 @@ namespace solid {
 template <typename T, std::size_t N, class Indexer = hash_indexer<T, N>>
 class unordered_set {
  public:
-  using const_iterator = const T*;
+  struct const_iterator {
+    constexpr const const_iterator& operator++() {
+      advance();
+      return *this;
+    }
+
+    constexpr const_iterator operator++(int) {
+      const_iterator tmp(*this);
+      ++(*this);
+      return tmp;
+    }
+
+    constexpr bool operator!=(const const_iterator& other) const {
+      return &other.set_ != &set_ || other.position_ != position_;
+    }
+
+    constexpr bool operator==(const const_iterator& other) const {
+      return &other.set_ == &set_ && other.position_ == position_;
+    }
+
+    const T& operator*() const { return set_.elements_[position_]; }
+
+   private:
+    constexpr const_iterator(const unordered_set& set) : set_(set) {
+      if (!set_.occupied_.test(0)) advance();
+    }
+
+    constexpr const_iterator(const unordered_set& set, std::size_t pos)
+        : set_(set), position_(pos) {}
+
+    constexpr const_iterator(const const_iterator& other)
+        : const_iterator(other.set_, other.position_) {}
+
+    void advance() {
+      ++position_;
+      for (; position_ < set_.capacity() && !set_.occupied_.test(position_);
+           ++position_) {
+      }
+    }
+
+    const unordered_set& set_;
+    std::size_t position_{0};
+  };
+
   using value_type = T;
 
   constexpr unordered_set(std::initializer_list<T> init)
@@ -30,26 +73,31 @@ class unordered_set {
     for (; first < last; ++first) {
       auto i = indexer_.index_of(*first);
       elements_[i] = *first;
+      occupied_.set(i);
     }
   }
 
-  constexpr std::size_t size() const { return N; }
+  constexpr std::size_t size() const { return occupied_.count(); }
+
+  constexpr std::size_t capacity() const { return N; }
 
   constexpr bool contains(const T& k) const {
-    return elements_[indexer_.index_of(k)] == k;
+    auto i = indexer_.index_of(k);
+    return occupied_.test(i) && elements_[i] == k;
   }
 
-  constexpr const_iterator begin() const { return elements_.begin(); }
+  constexpr const_iterator begin() const { return {*this}; }
 
-  constexpr const_iterator end() const { return elements_.end(); }
+  constexpr const_iterator end() const { return {*this, N}; }
 
-  constexpr const_iterator cbegin() const { return elements_.cbegin(); }
+  constexpr const_iterator cbegin() const { return {*this}; }
 
-  constexpr const_iterator cend() const { return elements_.cend(); }
+  constexpr const_iterator cend() const { return {*this, N}; }
 
  private:
   Indexer indexer_;
   array<T, N> elements_{};
+  bitset<N> occupied_{};
 };
 
 template <typename T, size_t N>

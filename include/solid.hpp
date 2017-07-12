@@ -4,6 +4,7 @@
 // IWYU pragma: begin_exports
 #include "solid/algorithm.hpp"
 #include "solid/array.hpp"
+#include "solid/bitset.hpp"
 #include "solid/hash_indexer.hpp"
 #include "solid/math.hpp"
 #include "solid/ordered_map.hpp"

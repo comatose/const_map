@@ -33,6 +33,14 @@ static_assert(solid::pow2(63) == 0x8000000000000000);
 constexpr uintmax_t nearest_2pow(uintmax_t n) { return pow2(log2(n)); }
 
 static_assert(nearest_2pow(15) == 8);
+
+constexpr uintmax_t align_up(uintmax_t n, uintmax_t a) {
+  return (n + a - 1) / a * a;
+}
+
+static_assert(align_up(11, 5) == 15);
+static_assert(align_up(15, 5) == 15);
+static_assert(align_up(14, 5) == 15);
 }
 
 #endif  // __SOLID_MATH_HPP
