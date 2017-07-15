@@ -7,6 +7,13 @@
 
 namespace solid {
 
+template <class T = void>
+struct less {
+  constexpr bool operator()(const T& lhs, const T& rhs) const {
+    return lhs < rhs;
+  }
+};
+
 template <class T>
 constexpr void swap(T& a, T& b) {
   T tmp = std::move(b);
@@ -99,7 +106,7 @@ constexpr T bubble_sort(T a) {
 template <class RandomIt, class V>
 constexpr RandomIt binary_search(RandomIt first, RandomIt last,
                                  const V& value) {
-  RandomIt notfound = last;
+  const RandomIt notfound = last;
   while (first < last) {
     RandomIt mid = first + (last - first) / 2;
     if (*mid == value)

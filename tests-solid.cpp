@@ -77,11 +77,19 @@ TEST_CASE("solid ordered_map", "[ordered_map]") {
   SECTION("all elements are ordered in the ordered_map") {
     auto zit = z.begin();
     REQUIRE(zit[0].first == 1);
+    REQUIRE(zit[0].second == 10);
     REQUIRE(zit[1].first == 3);
+    REQUIRE(zit[1].second == 2);
   }
 
   SECTION("test find in runtime") {
-    for (const auto& p : z) REQUIRE(z.find(p.first) != z.end());
+    for (const auto& p : z) {
+      auto it = z.find(p.first);
+      REQUIRE(it != z.end());
+      REQUIRE(it->first == p.first);
+      REQUIRE(it->second == p.second);
+      REQUIRE(z[p.first] == p.second);
+    }
   }
 }
 

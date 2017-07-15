@@ -10,7 +10,7 @@
 
 namespace solid {
 
-template <typename T, std::size_t N>
+template <typename T, std::size_t N, class Compare = less<T>>
 class ordered_set {
  public:
   using value_type = T;
@@ -31,13 +31,13 @@ class ordered_set {
             std::decay_t<typename std::iterator_traits<InputIt>::value_type>,
             T>::value);
 
-    quick_sort(elements_.begin(), elements_.end());
+    quick_sort(elements_.begin(), elements_.end(), Compare{});
   }
 
   constexpr std::size_t size() const { return N; }
 
   constexpr bool contains(const T& k) const {
-    return binary_search(begin(), end(), k) != end();
+    return binary_search(begin(), end(), k, Compare{}) != end();
   }
 
   constexpr const_iterator begin() const { return elements_.begin(); }
@@ -50,10 +50,12 @@ class ordered_set {
 
  private:
   array<T, N> elements_;
+  Compare compare_;
 };
 
-template <typename T, size_t N>
-constexpr ordered_set<T, N> make_ordered_set(const T (&ar)[N]) {
+template <typename T, size_t N, class Compare = less<T>>
+constexpr ordered_set<T, N, Compare> make_ordered_set(
+    const T (&ar)[N], const Compare& = Compare{}) {
   return {ar};
 }
 }
