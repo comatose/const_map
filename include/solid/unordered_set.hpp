@@ -101,7 +101,7 @@ class unordered_set {
 };
 
 template <typename T, size_t N>
-constexpr ordered_set<T, N> make_unordered_set(const T (&ar)[N]) {
+constexpr unordered_set<T, N> make_unordered_set(const T (&ar)[N]) {
   return {ar};
 }
 }

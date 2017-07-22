@@ -1,6 +1,7 @@
 #include <cstddef>
 
 #include <iostream>
+#include <type_traits>
 
 #include "catch.hpp"
 
@@ -187,5 +188,64 @@ TEST_CASE("solid bitset", "[bitset]") {
     bs.reset(77);
     REQUIRE(bs.count() == 0);
     REQUIRE(!bs.test(77));
+  }
+}
+
+TEST_CASE("solid lens", "[lens]") {
+  SECTION("") {
+    constexpr solid::pair<int, int> a[] = {{3, 2}, {1, 10}};
+    constexpr auto get_first = [](const auto& p) { return p.first; };
+
+    static_assert(
+        std::is_same<decltype(make_lens(&a[0], get_first))::value_type,
+                     int>::value);
+    static_assert(*make_lens(&a[0], get_first) == 3);
+    static_assert(*make_lens(&a[1], get_first) == 1);
+  }
+
+  SECTION("") {
+    solid::pair<int, int> a[] = {{3, 2}, {1, 10}};
+    auto get_first = [](auto& p) -> decltype(p.first)& { return p.first; };
+
+    static_assert(
+        std::is_same<decltype(make_lens(&a[0], get_first))::value_type,
+                     int&>::value);
+    for (auto it = make_lens(&a[0], get_first);
+         it != make_lens(&a[2], get_first); ++it) {
+      (*it)++;
+    }
+
+    REQUIRE(a[0].first == 4);
+    REQUIRE(a[0].second == 2);
+    REQUIRE(a[1].first == 2);
+    REQUIRE(a[1].second == 10);
+  }
+}
+
+TEST_CASE("solid unordered_map", "[unordered_map]") {
+  constexpr solid::pair<int, int> a[] = {{4, 2}, {1, 10}};
+  constexpr auto z = solid::make_unordered_map(a);
+  // constexpr solid::unordered_map<int, int, 2> z = {{4, 2}, {1, 10}};
+  static_assert(
+      std::is_same<decltype(z)::value_type, solid::pair<int, int>>::value);
+  // constexpr solid::ordered_map<int, int, 2> z = {{3, 2}, {1, 10}};
+  static_assert(z[4] == 2);
+  static_assert(z[1] == 10);
+  static_assert(z.find(4) != z.end());
+  static_assert(z.find(4)->first == 4);
+  static_assert(z.find(4)->second == 2);
+  static_assert(z.find(1) != z.end());
+  static_assert(z.find(1)->first == 1);
+  static_assert(z.find(1)->second == 10);
+  static_assert(z.find(100) == z.end());
+
+  SECTION("test find in runtime") {
+    for (const auto& p : z) {
+      auto it = z.find(p.first);
+      REQUIRE(it != z.end());
+      REQUIRE(it->first == p.first);
+      REQUIRE(it->second == p.second);
+      REQUIRE(z[p.first] == p.second);
+    }
   }
 }
