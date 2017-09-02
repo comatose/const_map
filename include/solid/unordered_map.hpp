@@ -13,7 +13,8 @@
 
 namespace solid {
 
-template <typename Key, typename Value, std::size_t N, class Indexer = hash_indexer<Key, N>>
+template <typename Key, typename Value, std::size_t N,
+          class Indexer = hash_indexer<Key, N>>
 class unordered_map {
  public:
   using value_type = pair<Key, Value>;
@@ -38,9 +39,13 @@ class unordered_map {
       return &other.owner_ == &owner_ && other.position_ == position_;
     }
 
-    constexpr const value_type& operator*() const { return owner_.elements_[position_]; }
+    constexpr const value_type& operator*() const {
+      return owner_.elements_[position_];
+    }
 
-    constexpr const value_type* operator->() const { return &owner_.elements_[position_]; }
+    constexpr const value_type* operator->() const {
+      return &owner_.elements_[position_];
+    }
 
    private:
     constexpr const_iterator(const unordered_map& set) : owner_(set) {
@@ -73,7 +78,7 @@ class unordered_map {
 
   template <class InputIt>
   constexpr unordered_map(InputIt begin, InputIt end)
-  : indexer_(make_lens(begin, get_first), make_lens(end, get_first)) {
+      : indexer_(make_lens(begin, get_first), make_lens(end, get_first)) {
     for (; begin < end; ++begin) {
       auto i = indexer_.index_of(begin->first);
       elements_[i] = *begin;
@@ -90,8 +95,7 @@ class unordered_map {
 
   constexpr const_iterator find(const Key& k) const {
     auto i = indexer_.index_of(k);
-    if(!occupied_.test(i) || elements_[i].first != k)
-      return end();
+    if (!occupied_.test(i) || elements_[i].first != k) return end();
     return {*this, i};
   }
 
@@ -108,9 +112,7 @@ class unordered_map {
   constexpr const_iterator cend() const { return {*this, N}; }
 
  private:
-  static constexpr const Key& get_first(const value_type& v) {
-    return v.first;
-  }
+  static constexpr const Key& get_first(const value_type& v) { return v.first; }
 
   Indexer indexer_;
   array<value_type, N> elements_{};
@@ -118,7 +120,8 @@ class unordered_map {
 };
 
 template <typename Key, typename Value, size_t N>
-constexpr unordered_map<Key, Value, N> make_unordered_map(const pair<Key, Value> (&ar)[N]) {
+constexpr unordered_map<Key, Value, N> make_unordered_map(
+    const pair<Key, Value> (&ar)[N]) {
   return {ar};
 }
 }

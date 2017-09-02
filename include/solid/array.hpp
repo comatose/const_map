@@ -5,8 +5,9 @@
 #include <cstddef>
 
 #include <algorithm>
-#include <iterator>
+#include <functional>
 #include <type_traits>
+#include <utility>
 
 namespace solid {
 
@@ -66,10 +67,10 @@ class array {
   T elements_[N]{};
 };
 
-template <typename T, std::size_t N>
-constexpr array<T, N + 1> append(const array<T, N>& a, T v) {
+template <typename T, size_t N>
+constexpr array<T, N + 1> append(const array<T, N>& a, T&& v) {
   array<T, N + 1> r{a.begin(), a.end()};
-  r[N] = std::move(v);
+  r[N] = std::forward<T>(v);
   return r;
 }
 

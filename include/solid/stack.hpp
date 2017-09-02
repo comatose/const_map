@@ -59,13 +59,6 @@ class stack {
   T elements_[N]{};
   std::size_t size_{0};
 };
-
-template <typename T, std::size_t N>
-constexpr stack<T, N + 1> append(const stack<T, N>& a, T v) {
-  stack<T, N + 1> r{a.begin(), a.end()};
-  r[N] = std::move(v);
-  return r;
-}
 }
 
 namespace std {
