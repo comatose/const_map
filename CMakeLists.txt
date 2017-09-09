@@ -17,6 +17,7 @@ add_executable(test_solid
   test/tests-ordered_map.cpp
   test/tests-ordered_set.cpp
   test/tests-stack.cpp
+  test/tests-static_string.cpp
   test/tests-table_indexer.cpp
   test/tests-unordered_map.cpp
   test/tests-unordered_set.cpp
