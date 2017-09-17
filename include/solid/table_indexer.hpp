@@ -68,6 +68,8 @@ struct table_indexer {
     return internal::hash_with<T, Hash>(table_[d], e) % N;
   }
 
+  constexpr std::size_t max_size() const { return N; }
+
  private:
   int table_[N]{};
 
@@ -105,6 +107,16 @@ struct table_indexer {
     return true;
   }
 };
+
+template <typename T, size_t N>
+constexpr table_indexer<T, N> make_table_indexer(const T (&ar)[N]) {
+  return {&ar[0], &ar[N]};
+}
+
+template <size_t M, typename T, size_t N>
+constexpr table_indexer<T, M> make_table_indexer(const T (&ar)[N]) {
+  return {&ar[0], &ar[N]};
+}
 }
 
 #endif  // __SOLID_TABLE_INDEXER_HPP

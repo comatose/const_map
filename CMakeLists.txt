@@ -13,6 +13,7 @@ add_executable(test_solid
   test/tests-main.cpp
   test/tests-array.cpp
   test/tests-bitset.cpp
+  test/tests-hash_indexer.cpp
   test/tests-lens.cpp
   test/tests-ordered_map.cpp
   test/tests-ordered_set.cpp

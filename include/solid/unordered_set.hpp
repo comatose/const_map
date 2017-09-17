@@ -104,6 +104,11 @@ template <typename T, size_t N>
 constexpr unordered_set<T, N> make_unordered_set(const T (&ar)[N]) {
   return {ar};
 }
+
+template <size_t M, typename T, size_t N>
+constexpr unordered_set<T, M> make_unordered_set(const T (&ar)[N]) {
+  return {ar};
+}
 }
 
 namespace std {

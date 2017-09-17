@@ -12,6 +12,7 @@
 #include "solid/ordered_set.hpp"
 #include "solid/pair.hpp"
 #include "solid/stack.hpp"
+#include "solid/static_string.hpp"
 #include "solid/table_indexer.hpp"
 #include "solid/unordered_map.hpp"
 #include "solid/unordered_set.hpp"

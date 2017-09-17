@@ -124,6 +124,12 @@ constexpr unordered_map<Key, Value, N> make_unordered_map(
     const pair<Key, Value> (&ar)[N]) {
   return {ar};
 }
+
+template <size_t M, typename Key, typename Value, size_t N>
+constexpr unordered_map<Key, Value, M> make_unordered_map(
+    const pair<Key, Value> (&ar)[N]) {
+  return {ar};
+}
 }
 
 namespace std {

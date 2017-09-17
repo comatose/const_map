@@ -11,11 +11,13 @@
 template <typename>
 struct show_type;
 
-TEST_CASE("solid table_indexer", "[table_indexer]") {
+TEST_CASE("solid hash_indexer", "[hash_indexer]") {
   constexpr int numbers[] = {1, 2, 15, 5, 7};
 
-  SECTION("table_indexer for numbers") {
-    constexpr solid::table_indexer<int, 5> indexer(numbers);
+  SECTION("hash_indexer for numbers") {
+    // selected the size greater than the actual number of elements
+    // to decrease compilation time and collision probability.
+    constexpr solid::hash_indexer<int, 7> indexer(numbers);
 
     solid::array<bool, indexer.max_size()> appeared{};
     for (const auto& e : numbers) {
@@ -26,8 +28,8 @@ TEST_CASE("solid table_indexer", "[table_indexer]") {
     }
   }
 
-  SECTION("another table_indexer for numbers") {
-    constexpr auto indexer = solid::make_table_indexer({1, 2, 15, 5, 7});
+  SECTION("another hash_indexer for numbers") {
+    constexpr auto indexer = solid::make_hash_indexer<7>({1, 2, 15, 5, 7});
 
     solid::array<bool, indexer.max_size()> appeared{};
     for (const auto& e : numbers) {
@@ -38,11 +40,14 @@ TEST_CASE("solid table_indexer", "[table_indexer]") {
     }
   }
 
-  constexpr solid::static_string_view strings[] = {"table", "indexer", "for",
+  constexpr solid::static_string_view strings[] = {"hash", "indexer", "for",
                                                    "strings"};
 
-  SECTION("table_indexer for strings") {
-    solid::table_indexer<solid::static_string_view, 5> indexer(strings);
+  SECTION("hash_indexer for strings") {
+    // same as the case for numbers,
+    // the size is greater than the number of strings.
+    constexpr solid::hash_indexer<solid::static_string_view, 5> indexer(
+        strings);
 
     solid::array<bool, indexer.max_size()> appeared{};
     for (const auto& e : strings) {
@@ -53,9 +58,9 @@ TEST_CASE("solid table_indexer", "[table_indexer]") {
     }
   }
 
-  SECTION("table_indexer for strings") {
+  SECTION("hash_indexer for strings") {
     constexpr auto indexer =
-        solid::make_table_indexer<5, solid::static_string_view>(
+        solid::make_hash_indexer<5, solid::static_string_view>(
             {"hash", "indexer", "for", "strings"});
 
     solid::array<bool, indexer.max_size()> appeared{};

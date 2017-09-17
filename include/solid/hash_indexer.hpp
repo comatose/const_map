@@ -42,6 +42,8 @@ struct hash_indexer {
     return internal::hash_with<T, Hash>(d, e) % N;
   }
 
+  constexpr std::size_t max_size() const { return N; }
+
  private:
   std::size_t d{};
 
@@ -58,6 +60,16 @@ struct hash_indexer {
     return true;
   }
 };
+
+template <typename T, size_t N>
+constexpr hash_indexer<T, N> make_hash_indexer(const T (&ar)[N]) {
+  return {&ar[0], &ar[N]};
+}
+
+template <size_t M, typename T, size_t N>
+constexpr hash_indexer<T, M> make_hash_indexer(const T (&ar)[N]) {
+  return {&ar[0], &ar[N]};
+}
 }
 
 #endif  // __SOLID_INDEXER_HPP
