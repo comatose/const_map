@@ -2,3 +2,5 @@ build
 ext
 /Makefile
 hana
+.vscode/.cmaketools.json
+.vscode/c_cpp_properties.json
