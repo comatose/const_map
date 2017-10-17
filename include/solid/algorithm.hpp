@@ -188,5 +188,5 @@ template <typename T>
 struct hash<T, std::enable_if_t<std::is_integral<T>::value>> {
   constexpr std::size_t operator()(const T& value) { return value; }
 };
-}
+}  // namespace solid
 #endif  // __SOLID_ALGORITHM_HPP

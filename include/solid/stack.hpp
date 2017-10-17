@@ -59,11 +59,11 @@ class stack {
   T elements_[N]{};
   std::size_t size_{0};
 };
-}
+}  // namespace solid
 
 namespace std {
 
 template <class T, size_t N>
 struct tuple_size<solid::stack<T, N>> : integral_constant<size_t, N> {};
-}
+}  // namespace std
 #endif  // __SOLID_STACK_HPP

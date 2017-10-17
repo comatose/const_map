@@ -42,4 +42,4 @@ class bitset {
   unsigned int storage_[align_up(N, BITS_PER_UINT) / BITS_PER_UINT]{};
   std::size_t count_{0};
 };
-}
+}  // namespace solid

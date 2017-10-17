@@ -71,6 +71,6 @@ struct hash<static_string_view> {
     return value;
   }
 };
-}
+}  // namespace solid
 
 #endif  // __SOLID_STATIC_STRING_HPP

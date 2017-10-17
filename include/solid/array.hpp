@@ -78,11 +78,11 @@ template <typename T, size_t N>
 constexpr array<T, N> make_array(const T (&ar)[N]) {
   return {&ar[0], &ar[N]};
 }
-}
+}  // namespace solid
 
 namespace std {
 
 template <class T, size_t N>
 struct tuple_size<solid::array<T, N>> : integral_constant<size_t, N> {};
-}
+}  // namespace std
 #endif  // __SOLID_ARRAY_HPP

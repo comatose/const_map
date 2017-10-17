@@ -117,6 +117,6 @@ template <size_t M, typename T, size_t N>
 constexpr table_indexer<T, M> make_table_indexer(const T (&ar)[N]) {
   return {&ar[0], &ar[N]};
 }
-}
+}  // namespace solid
 
 #endif  // __SOLID_TABLE_INDEXER_HPP

@@ -41,6 +41,6 @@ constexpr uintmax_t align_up(uintmax_t n, uintmax_t a) {
 static_assert(align_up(11, 5) == 15);
 static_assert(align_up(15, 5) == 15);
 static_assert(align_up(14, 5) == 15);
-}
+}  // namespace solid
 
 #endif  // __SOLID_MATH_HPP

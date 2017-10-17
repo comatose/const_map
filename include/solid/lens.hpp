@@ -56,12 +56,12 @@ template <typename T, class F>
 constexpr lens<T, F> make_lens(T it, F f) {
   return {it, f};
 }
-}
+}  // namespace solid
 
 namespace std {
 template <typename T, class F>
 struct iterator_traits<solid::lens<T, F>> {
   using value_type = typename solid::lens<T, F>::value_type;
 };
-}
+}  // namespace std
 #endif  // __SOLID_LENS_HPP

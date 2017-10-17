@@ -70,6 +70,6 @@ template <size_t M, typename T, size_t N>
 constexpr hash_indexer<T, M> make_hash_indexer(const T (&ar)[N]) {
   return {&ar[0], &ar[N]};
 }
-}
+}  // namespace solid
 
 #endif  // __SOLID_INDEXER_HPP

@@ -8,5 +8,5 @@ struct pair {
   First first;
   Second second;
 };
-}
+}  // namespace solid
 #endif  // __SOLID_PAIR_HPP

@@ -130,13 +130,13 @@ constexpr unordered_map<Key, Value, M> make_unordered_map(
     const pair<Key, Value> (&ar)[N]) {
   return {ar};
 }
-}
+}  // namespace solid
 
 namespace std {
 
 template <class Key, typename Value, size_t N, class Indexer>
 struct tuple_size<solid::unordered_map<Key, Value, N, Indexer>>
     : integral_constant<size_t, N> {};
-}
+}  // namespace std
 
 #endif  // __SOLID_UNORDERED_MAP_HPP

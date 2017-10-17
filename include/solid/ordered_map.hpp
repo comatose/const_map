@@ -34,11 +34,11 @@ class ordered_map
   using const_iterator = const value_type*;
 
   using base_type::base_type;
-  using base_type::size;
   using base_type::begin;
-  using base_type::end;
   using base_type::cbegin;
   using base_type::cend;
+  using base_type::end;
+  using base_type::size;
 
   constexpr const Value& operator[](const Key& key) const {
     auto it = find(key);
@@ -59,5 +59,5 @@ constexpr ordered_map<Key, Value, N, Compare> make_ordered_map(
     const pair<Key, Value> (&ar)[N], const Compare& = Compare{}) {
   return {ar};
 }
-}
+}  // namespace solid
 #endif  // __SOLID_ORDERED_MAP_HPP

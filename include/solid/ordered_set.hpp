@@ -58,5 +58,5 @@ constexpr ordered_set<T, N, Compare> make_ordered_set(
     const T (&ar)[N], const Compare& = Compare{}) {
   return {ar};
 }
-}
+}  // namespace solid
 #endif  // __SOLID_ORDERED_SET_HPP

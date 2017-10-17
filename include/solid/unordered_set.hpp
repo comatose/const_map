@@ -109,13 +109,13 @@ template <size_t M, typename T, size_t N>
 constexpr unordered_set<T, M> make_unordered_set(const T (&ar)[N]) {
   return {ar};
 }
-}
+}  // namespace solid
 
 namespace std {
 
 template <class T, size_t N, class Indexer>
 struct tuple_size<solid::unordered_set<T, N, Indexer>>
     : integral_constant<size_t, N> {};
-}
+}  // namespace std
 
 #endif  // __SOLID_UNORDERED_SET_HPP
