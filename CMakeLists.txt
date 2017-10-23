@@ -4,6 +4,10 @@ project(Solid)
 # list(APPEND CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake/Modules/")
 # set(Hana_INSTALL_PREFIX "${CMAKE_SOURCE_DIR}/ext/hana")
 # find_package(Hana 1.1.0)
+if(NOT CMAKE_BUILD_TYPE)
+  message(STATUS "No build type selected, default to RelWithDebInfo")
+  set(CMAKE_BUILD_TYPE RelWithDebInfo)
+endif()
 
 add_library(Solid INTERFACE)
 target_include_directories(Solid INTERFACE "include")
@@ -25,7 +29,6 @@ add_executable(test_solid
 )
 target_link_libraries(test_solid Solid)
 target_include_directories(test_solid PUBLIC ${CATCH_INCLUDE_DIR})
-target_compile_options(test_solid PRIVATE -O3)
 
 enable_testing()
 add_test(test_solid test_solid)
