@@ -27,6 +27,9 @@ target_link_libraries(test_solid Solid)
 target_include_directories(test_solid PUBLIC ${CATCH_INCLUDE_DIR})
 target_compile_options(test_solid PRIVATE -O3)
 
+enable_testing()
+add_test(test_solid test_solid)
+
 file(GLOB_RECURSE all_source_files "include/*[ch]pp" "tests-*.cpp")
 
 find_program(CLANG_FORMAT clang-format)
